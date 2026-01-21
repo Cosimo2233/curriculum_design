@@ -1,0 +1,10 @@
+.vs/
+**/x64/
+**/Debug/
+**/Release/
+*.vcxproj.user
+*.ilk
+*.pdb
+*.ipdb
+*.iobj
+*.recipe
