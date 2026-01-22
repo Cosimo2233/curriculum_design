@@ -136,26 +136,52 @@ void System::login()
     cout << "============ 用户登录 ============\n";
 
     string username, password;
+    int attemptCount = 0;
+    const int MAX_ATTEMPTS = 5;
+
     cout << "              用户名: ";
     cin >> username;
-    cout << "              密码: ";
-    cin >> password;
 
-    for (auto &user : users)
+    // 最多尝试5次密码
+    while (attemptCount < MAX_ATTEMPTS)
     {
-        if (user.getUsername() == username && user.checkPassword(password))
+        if (attemptCount == 0) {
+            cout << "              密码: ";
+        }
+        else {
+            cout << "              密码(第" << (attemptCount + 1) << "次尝试): ";
+        }
+
+        cin >> password;
+        attemptCount++;
+
+        // 验证用户名和密码
+        for (auto& user : users)
         {
-            currentUser = user;
-            cout << "\n         登录成功！欢迎 " << username << endl;
-            waitForKey();
-            return;
+            if (user.getUsername() == username && user.checkPassword(password))
+            {
+                currentUser = user;
+                cout << "\n         登录成功！欢迎 " << username << endl;
+                waitForKey();
+                return;
+            }
+        }
+
+        // 密码错误
+        if (attemptCount < MAX_ATTEMPTS)
+        {
+            cout << "\n密码错误！还剩 " << (MAX_ATTEMPTS - attemptCount)
+                << " 次尝试机会。" << endl;
         }
     }
 
-    cout << "\n用户名或密码错误!" << endl;
-    waitForKey();
+    // 达到最大尝试次数
+    cout << "\n密码错误次数超过" << MAX_ATTEMPTS << "次，系统将退出！" << endl;
+    cout << "按任意键退出..." << endl;
+    cin.ignore();
+    cin.get();
+    exit(0);  // 直接退出程序
 }
-
 void System::registerUser()
 {
     clearScreen();
@@ -1296,11 +1322,15 @@ void System::run()
     while (currentUser.getUsername().empty())
     {
         clearScreen();
-        cout << "============ 证券投资决策支持系统 =========\n";
+        cout << "========== ";  
+        cout << "\033[32m";       
+        cout << "证券投资决策支持系统";  
+        cout << "\033[0m";       
+        cout << " ===========" << endl;  
         cout << "|                  1. 登录                |\n";
         cout << "|                  2. 注册                |\n";
         cout << "|                  3. 退出                |\n";
-        cout << "==========================================\n";
+        cout << "===========================================\n";
         cout << "                   请选择: ";
 
         int choice;
@@ -1333,7 +1363,7 @@ void System::run()
         switch (choice)
         {
         case 0: // 退出
-            cout << "感谢使用，再见!\n本程序有AAA张师傅完成！" << endl;
+            cout << "感谢使用，再见!\n本程序由AAA张师傅完成！" << endl;
             return;
 
         case 1: // 账户管理
